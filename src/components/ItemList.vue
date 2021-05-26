@@ -1,51 +1,53 @@
+<!--
+task {
+  name : タスク名
+  isFinished : 完了したか
+}
+-->
+
 <template>
   <div>
-    <div>ItemList</div>
-    <div v-for="item in items" :key="item.name">
-      <div class="item" :class="{ over500: item.price >= 500 }">
-        <div class="name">名前: {{ item.name }}</div>
-        <div class="price">{{ item.price }} 円</div>
-        <div v-if="item.price >= 10000">高額商品</div>
+    <div>タスク一覧</div>
+    <div v-for="task in tasks" :key="task.name">
+      <div class="task">
+        <span class="name" :class="{ finished: task.isFinished }">{{ task.name }} </span>
+        <button v-if="!task.isFinished" @click="finishTask(task)">完了</button>
       </div>
     </div>
     <div>
       <label>
-        名前
-        <input v-model="newItemName" type="text" />
+        タスク名
+        <input v-model="newTaskName" type="text" />
       </label>
-      <label>
-        価格
-        <input v-model="newItemPrice" type="number" />
-      </label>
-      <button @click="addItem">add</button>
+      <button @click="addTask">追加</button>
     </div>
   </div>
 </template>
-
 
 <script>
 import { ref } from "vue";
 
 export default {
   setup() {
-    const items = ref([
-      { name: "たまご", price: 100 },
-      { name: "りんご", price: 160 },
-    ]);
-    const newItemName = ref("");
-    const newItemPrice = ref(0);
+    const tasks = ref([]);
+    const newTaskName = ref("");
 
-    const addItem = () => {
-      items.value.push({ name: newItemName.value, price: newItemPrice.value });
+    const addTask = () => {
+      tasks.value.push({ name: newTaskName.value, isFinished: false });
+      newTaskName.value = ""
     };
 
-    return { items, newItemName, newItemPrice, addItem };
+    const finishTask = task => {
+      task.isFinished = true
+    }
+
+    return { tasks, newTaskName, addTask, finishTask };
   },
 };
 </script>
 
 <style>
-.over500 {
-  color: red;
+.finished {
+  text-decoration: line-through
 }
 </style>
